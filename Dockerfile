@@ -21,7 +21,7 @@ ENV HELM_REPOSITORY_CONFIG="/deploy/terraform_repo_eks/provisioning/kubernetes/r
 WORKDIR /deploy
 
 RUN apk --no-cache add --update jq aws-cli bash git vim curl gawk unzip python3 py3-pip go perl make
-RUN pip3 install pre-commit
+RUN pip3 install --no-cache-dir pre-commit
 RUN wget -qO- https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz | tar xvz -C /usr/bin/ --strip=1 linux-amd64/helm
 RUN wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.1/mkcert-v1.4.1-linux-amd64 -O /usr/bin/mkcert && chmod +x /usr/bin/mkcert
 RUN wget https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/aws-iam-authenticator -O /usr/bin/aws-iam-authenticator && chmod +x /usr/bin/aws-iam-authenticator

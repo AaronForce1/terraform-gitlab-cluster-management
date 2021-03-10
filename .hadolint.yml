@@ -4,7 +4,9 @@ ignored:
   - DL3007 # Always using latest
   - DL3003 # Ignoring WORKDIR rule as we are CD'ing post clone
   - DL4006 # Disabling edge case "SHELL option -o" check
-
+  - DL3013 # Ignoring PIP Latest issue
+  - DL4001 # Ignoring CURL vs WGET for now <-- TODO: Should reconcile
+  
 trustedRegistries:
   - docker.io
   - registry.gitlab.com
