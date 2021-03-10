@@ -1,0 +1,159 @@
+default:
+  image: docker:20.10.2
+
+services:
+  - docker:20.10.2-dind
+    
+# Default output file for Terraform plan
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_TLS_VERIFY: 1
+  DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+  GITLAB_USERNAME: gitlab-ci-token
+  GITLAB_PASSWORD: $CI_JOB_TOKEN
+  CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  RELEASE_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  TF_ROOT: ${CI_PROJECT_DIR}
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}-$CI_COMMIT_REF_NAME
+
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - .terraform
+
+.terraform_init: &terraform_init
+- apk add --update curl jq
+- alias convert_report="jq -r '([.resource_changes[].change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
+- curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.14.6/2019-08-22/bin/linux/amd64/kubectl
+- install kubectl /usr/local/bin/ && rm kubectl
+- curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.14.6/2019-08-22/bin/linux/amd64/aws-iam-authenticator
+- install aws-iam-authenticator /usr/local/bin/ && rm aws-iam-authenticator
+- terraform --version
+- if [[ $CI_COMMIT_TAG != '' ]]; then export TF_VAR_tfenv=$CI_COMMIT_REF_NAME; else export TF_VAR_tfenv=$CI_COMMIT_REF_SLUG; fi  
+- printenv | grep "TF_VAR"
+- cd ${TF_ROOT}
+# Override standard "local" storage for Gitlab Terraform Testing
+- |
+    cat <<EOF > backend.tf
+    terraform {
+      // Gitlab Terraform State Storage
+      backend "http" {}
+    }
+    EOF
+- gitlab-terraform init
+ 
+.docker_login: &docker_login
+  - sleep 3
+  - docker info 
+  - docker login $CI_REGISTRY -u $GITLAB_USERNAME -p $GITLAB_PASSWORD
+
+stages:
+  - lint
+  - build
+  - validate
+  - security review
+  - release
+  - latest
+
+##################################
+#### ------------------------ ####
+####                          ####
+####     CONTAINER LINTING    ####
+####                          ####
+#### ------------------------ ####
+##################################
+
+lint:dockerfiles:
+  stage: lint
+  retry: 1
+  image: hadolint/hadolint:latest-debian
+  before_script:
+      - hadolint --version
+  script:
+      - hadolint --config .hadolint.yml Dockerfile
+  allow_failure: true
+
+##################################
+#### ------------------------ ####
+####                          ####
+####     CONTAINER BUILDS     ####
+####                          ####
+#### ------------------------ ####
+##################################
+
+build:
+  stage: build
+  before_script:
+    - *docker_login
+  script:
+    - docker build --pull -t $CONTAINER_IMAGE .
+    - docker push $CONTAINER_IMAGE
+  except:
+    - tags
+
+release:
+  stage: build
+  before_script:
+    - *docker_login
+  script:
+    - docker build --pull -t $RELEASE_IMAGE .
+    - docker push $RELEASE_IMAGE
+  only:
+    - tags
+
+release-latest:
+  stage: release
+  when: manual
+  before_script:
+    - *docker_login
+  script:
+    - docker pull $RELEASE_IMAGE
+    - docker tag $RELEASE_IMAGE $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:latest
+  only:
+    - tags
+
+##################################
+#### ------------------------ ####
+####                          ####
+####      TERRAFORM JOBS      ####
+####         (Linting)        ####
+#### ------------------------ ####
+##################################
+
+## VALIDATE
+validate build:
+  stage: validate
+  image: $CONTAINER_IMAGE
+  before_script:
+    - *terraform_init
+  script:
+    - gitlab-terraform validate
+  except:
+    - tags
+
+validate release:
+  stage: validate
+  image: $RELEASE_IMAGE
+  before_script:
+    - *terraform_init
+  script:
+    - gitlab-terraform validate
+  only:
+    - tags
+
+tfsec:
+  image: 
+    name: wesleydeanflexion/tfsec
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/go/bin'
+  stage: security review
+  before_script:
+    - tfsec -v
+  script: tfsec --config-file .tfsec.yml . -f json | tee gl-sast-report.json
+  artifacts:
+    reports:
+      sast: gl-sast-report.json

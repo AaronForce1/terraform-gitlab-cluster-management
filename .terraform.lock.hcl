@@ -1,0 +1,55 @@
+# This file is maintained automatically by "terraform init".
+# Manual edits may be lost in future updates.
+
+provider "registry.terraform.io/gitlabhq/gitlab" {
+  version = "3.5.0"
+  hashes = [
+    "h1:666HgCnsx/kDhHvND6rVll/HJ82jKWT/qqbNTDHKotQ=",
+    "zh:20a7e10d88020a88f1aedd93d1de9a70efcc192f5c630df6a7818c4c3e501ac5",
+    "zh:30c2f168869e7b243c844610bba5964de4acec9d0bb1255fc1ee6b97645dc398",
+    "zh:4429f353f907f496997590113f1552db153d1b5793a64b06dd30ddd69e4c5c9b",
+    "zh:9ab8c83053e8af0722e2aa04bc676a40543cc12f82e250d711bfaf2a791b58b1",
+    "zh:a51dacd1f2022ac3edada0541327b87a7886ad981c32d29fd0bb48139a0b1360",
+    "zh:ab568a4a19e272f2ead4d6e4f2a8ae61a18a952c92de741dfa6b1f501a18d30c",
+    "zh:c7a7440c9b4698524506a6cbf8c8daf0dae32af3e245882b1ae2217c5a53bb9d",
+    "zh:cc344adba161de020c677f7a6e233d829ffdfcd80ca154633caa5b5f23735346",
+    "zh:ce6f02db7da21c308e824ea3d051e182f310fdba74fd4d40fedceb539b97daed",
+    "zh:e44c8cde080e8690533623d4c56d9070cb4c720d12774e341c5b75c20291cd2d",
+    "zh:ebdc5b7c23f3a0be2776402782312277cbd5ec5b54b8302eb64934e96e6c9a28",
+  ]
+}
+
+provider "registry.terraform.io/hashicorp/kubernetes" {
+  version = "2.0.2"
+  hashes = [
+    "h1:PRfDnUFBD4ud7SgsMAa5S2Gd60FeriD1PWE6EifjXB0=",
+    "zh:4e66d509c828b0a2e599a567ad470bf85ebada62788aead87a8fb621301dec55",
+    "zh:55ca6466a82f60d2c9798d171edafacc9ea4991aa7aa32ed5d82d6831cf44542",
+    "zh:65741e6910c8b1322d9aef5dda4d98d1e6409aebc5514b518f46019cd06e1b47",
+    "zh:79456ca037c19983977285703f19f4b04f7eadcf8eb6af21f5ea615026271578",
+    "zh:7c39ced4dc44181296721715005e390021770077012c206ab4c209fb704b34d0",
+    "zh:86856c82a6444c19b3e3005e91408ac68eb010c9218c4c4119fc59300b107026",
+    "zh:999865090c72fa9b85c45e76b20839da51714ae429d1ab14b7d8ce66c2655abf",
+    "zh:a3ea0ae37c61b4bfe81f7a395fb7b5ba61564e7d716d7a191372c3c983271d13",
+    "zh:d9061861822933ebb2765fa691aeed2930ee495bfb6f72a5bdd88f43ccd9e038",
+    "zh:e04adbe0d5597d1fdd4f418be19c9df171f1d709009f63b8ce1239b71b4fa45a",
+  ]
+}
+
+provider "registry.terraform.io/hashicorp/null" {
+  version = "3.1.0"
+  hashes = [
+    "h1:vpC6bgUQoJ0znqIKVFevOdq+YQw42bRq0u+H3nto8nA=",
+    "zh:02a1675fd8de126a00460942aaae242e65ca3380b5bb192e8773ef3da9073fd2",
+    "zh:53e30545ff8926a8e30ad30648991ca8b93b6fa496272cd23b26763c8ee84515",
+    "zh:5f9200bf708913621d0f6514179d89700e9aa3097c77dac730e8ba6e5901d521",
+    "zh:9ebf4d9704faba06b3ec7242c773c0fbfe12d62db7d00356d4f55385fc69bfb2",
+    "zh:a6576c81adc70326e4e1c999c04ad9ca37113a6e925aefab4765e5a5198efa7e",
+    "zh:a8a42d13346347aff6c63a37cda9b2c6aa5cc384a55b2fe6d6adfa390e609c53",
+    "zh:c797744d08a5307d50210e0454f91ca4d1c7621c68740441cf4579390452321d",
+    "zh:cecb6a304046df34c11229f20a80b24b1603960b794d68361a67c5efe58e62b8",
+    "zh:e1371aa1e502000d9974cfaff5be4cfa02f47b17400005a16f14d2ef30dc2a70",
+    "zh:fc39cc1fe71234a0b0369d5c5c7f876c71b956d23d7d6f518289737a001ba69b",
+    "zh:fea4227271ebf7d9e2b61b89ce2328c7262acd9fd190e1fd6d15a591abfa848e",
+  ]
+}
