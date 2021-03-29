@@ -83,8 +83,3 @@ locals {
     "'\"}'"
   ])
 }
-
-  group_cluster_api_url = join("", ["https://git.hk.asiaticketing.com/api/v4/", "/groups/", gitlab_group_cluster.aws_cluster.group, "/clusters/", split(":", gitlab_group_cluster.aws_cluster.id)[1]])
-  curl_cmd = join("", ["curl -s --header \"Private-Token: $GITLAB_TOKEN\" ",
-    local.group_cluster_api_url,
-  " -H 'Content-Type:application/json' --request PUT --data '{\"management_project_id\":\"'$CLUSTER_MANAGEMENT_PROJECT_ID'\"}'"])
