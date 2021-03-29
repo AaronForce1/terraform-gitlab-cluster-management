@@ -15,7 +15,9 @@ variable "kubernetes_configuration" {
     cluster_name                       = string
     kubernetes_api_url                 = string
     cluster_certificate_authority_data = string
+    token                              = string
   })
+  sensitive = true
   description = "Kubernetes configuration required to bind the cluster into gitlab with management capabilities"
 }
 
