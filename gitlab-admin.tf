@@ -40,7 +40,7 @@ resource "kubernetes_cluster_role_binding" "gitlab-admin" {
   }
   subject {
     kind      = "ServiceAccount"
-    name      = "gitlab-admin"
+    name      = "gitlab-admin-${local.gitlab_configuration_name}"
     namespace = "kube-system"
   }
 }
