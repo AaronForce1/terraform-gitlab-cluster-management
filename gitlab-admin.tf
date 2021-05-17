@@ -1,14 +1,14 @@
 # GITLAB MANAGED APPS INTEGRATION
 resource "kubernetes_service_account" "gitlab-admin" {
   metadata {
-    name      = "gitlab-admin"
+    name      = "gitlab-admin-${local.gitlab_configuration_name}"
     namespace = "kube-system"
   }
 }
 
 resource "kubernetes_secret" "gitlab-admin" {
   metadata {
-    name      = "gitlab-admin"
+    name      = "gitlab-admin-${local.gitlab_configuration_name}"
     namespace = "kube-system"
     annotations = {
       "kubernetes.io/service-account.name" = kubernetes_service_account.gitlab-admin.metadata.0.name
@@ -31,7 +31,7 @@ data "kubernetes_secret" "gitlab-admin-token" {
 
 resource "kubernetes_cluster_role_binding" "gitlab-admin" {
   metadata {
-    name = "gitlab-admin"
+    name = "gitlab-admin-${local.gitlab_configuration_name}"
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
