@@ -1,6 +1,5 @@
 variable "gitlab_configuration" {
   type = object({
-    name                          = string
     gitlab_host_url               = string
     token                         = string
     group                         = string
